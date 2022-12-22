@@ -4,6 +4,8 @@ import jinja2
 import argparse
 import sys
 import time
+import itertools
+
 
 
 def create_parsers():
@@ -31,7 +33,7 @@ def create_parsers():
                        required=False)
         p.add_argument("--platforms", help="Not required. Defaults to the arch", default=None, required=False)
         p.add_argument("--timestamp", help="Not required. Defaults to the current epoch", type=int, default=None, required=False)
-    parser_baseos.add_argument("--checksums", )
+    parser_baseos.add_argument("--checksums", help="Checksums in format PATH:CHECKSUMTYPE:CHECKSUM", nargs='+', required=True, action='append')
     return main_parser
 
 
@@ -59,8 +61,23 @@ def create_repo_treeinfo(args):
 
 
 def create_baseos_treeinfo(args):
-    print("TODO")
-    sys.exit(1)
+    checksums = []
+    args.checksums = itertools.chain(*args.checksums)
+    for cs in args.checksums:
+        path, cs_type, cs_value = cs.split(':')
+        checksums.append((path, f"{cs_type}:{cs_value}"))
+    template_payload = {
+        'arch': args.arch,
+        'family': args.family,
+        'family_short': args.family_short if args.family_short is not None else args.family,
+        'packages_dir': args.packages_dir,
+        'platforms': args.platforms if args.platforms is not None else args.arch,
+        'variant': args.variant,
+        'version': args.version,
+        'timestamp': args.timestamp if args.timestamp is not None else int(time.time()),  # epoch
+        'checksums': checksums  # epoch
+    }
+    use_template_and_save('baseos.j2', template_payload, args.output_file)
 
 
 if __name__ == '__main__':
@@ -72,4 +89,4 @@ if __name__ == '__main__':
     if args.command == 'repo':
         create_repo_treeinfo(args)
     elif args.command == 'baseos':
-        create_repo_treeinfo(args)
+        create_baseos_treeinfo(args)

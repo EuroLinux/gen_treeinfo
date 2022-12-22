@@ -1,8 +1,7 @@
 [checksums]
-{%for cs in checksums %}
+{%for cs in checksums -%}
 {{cs[0]}} = {{cs[1]}}
 {%endfor %}
-
 [general]
 ; WARNING.0 = This section provides compatibility with pre-productmd treeinfos.
 ; WARNING.1 = Read productmd documentation for details about new format.
@@ -10,29 +9,42 @@ arch = {{arch}}
 family = {{family}}
 name = {{family}} {{version}}
 packagedir = {{packages_dir}}
+{% if arch == 'x86_64' -%}
+platforms = {{arch}},xen
+{% else -%}
 platforms = {{arch}}
+{% endif -%}
 repository = .
 timestamp = {{timestamp}}
 variant = {{variant}}
-variants = AppStream, {{variant}}
+variants = AppStream,{{variant}}
 version = {{version}}
 
 [header]
 type = productmd.treeinfo
 version = 1.2
 
+{%if arch == "ppc64le" -%}
+[images-{{arch}}]
+boot.iso = images/boot.iso
+initrd = ppc/ppc64/initrd.img
+kernel = ppc/ppc64/vmlinuz
+
+{% else -%}
 [images-{{arch}}]
 boot.iso = images/boot.iso
 efiboot.img = images/efiboot.img
 initrd = images/pxeboot/initrd.img
 kernel = images/pxeboot/vmlinuz
-{% if arch == 'x86_64' %}
 
+{%endif -%}
+
+{% if arch == 'x86_64' -%}
 [images-xen]
 initrd = images/pxeboot/initrd.img
 kernel = images/pxeboot/vmlinuz
-{% endif %}
 
+{% endif -%}
 [release]
 name = {{family}}
 short = {{family_short}}
@@ -44,8 +56,12 @@ mainimage = images/install.img
 [tree]
 arch = {{arch}}
 build_timestamp = {{timestamp}}
-platforms = {{platforms}}
-variants = AppStream, {{variant}}
+{% if arch == 'x86_64' -%}
+platforms = {{arch}},xen
+{% else -%}
+platforms = {{arch}}
+{% endif -%}
+variants = AppStream,{{variant}}
 
 [variant-AppStream]
 id = AppStream

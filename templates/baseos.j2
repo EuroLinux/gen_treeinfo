@@ -1,0 +1,66 @@
+[checksums]
+{%for cs in checksums %}
+{{cs[0]}} = {{cs[1]}}
+{%endfor %}
+
+[general]
+; WARNING.0 = This section provides compatibility with pre-productmd treeinfos.
+; WARNING.1 = Read productmd documentation for details about new format.
+arch = {{arch}}
+family = {{family}}
+name = {{family}} {{version}}
+packagedir = {{packages_dir}}
+platforms = {{arch}}
+repository = .
+timestamp = {{timestamp}}
+variant = {{variant}}
+variants = AppStream, {{variant}}
+version = {{version}}
+
+[header]
+type = productmd.treeinfo
+version = 1.2
+
+[images-{{arch}}]
+boot.iso = images/boot.iso
+efiboot.img = images/efiboot.img
+initrd = images/pxeboot/initrd.img
+kernel = images/pxeboot/vmlinuz
+{% if arch == 'x86_64' %}
+
+[images-xen]
+initrd = images/pxeboot/initrd.img
+kernel = images/pxeboot/vmlinuz
+{% endif %}
+
+[release]
+name = {{family}}
+short = {{family_short}}
+version = {{version}}
+
+[stage2]
+mainimage = images/install.img
+
+[tree]
+arch = {{arch}}
+build_timestamp = {{timestamp}}
+platforms = {{platforms}}
+variants = AppStream, {{variant}}
+
+[variant-AppStream]
+id = AppStream
+name = AppStream
+packages = ../../../AppStream/{{arch}}/os/Packages
+repository = ../../../AppStream/{{arch}}/os
+type = variant
+uid = AppStream
+
+[variant-{{variant}}]
+id = {{variant}}
+name = {{variant}}
+packages = {{packages_dir}}
+repository = .
+type = variant
+uid = {{variant}}
+
+

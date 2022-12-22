@@ -31,6 +31,7 @@ def create_parsers():
                        required=False)
         p.add_argument("--platforms", help="Not required. Defaults to the arch", default=None, required=False)
         p.add_argument("--timestamp", help="Not required. Defaults to the current epoch", type=int, default=None, required=False)
+    parser_baseos.add_argument("--checksums", )
     return main_parser
 
 

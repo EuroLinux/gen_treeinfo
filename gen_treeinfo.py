@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
-# import jinja2
+import jinja2
 import argparse
 import sys
+import time
 
 
 def create_parsers():
@@ -29,11 +30,17 @@ def create_parsers():
                        "Default to Packages", default="Packages",
                        required=False)
         p.add_argument("--platforms", help="Not required. Defaults to the arch", default=None, required=False)
+        p.add_argument("--timestamp", help="Not required. Defaults to the current epoch", type=int, default=None, required=False)
     return main_parser
 
-def use_template_and_save(template_path, template_payload, save_to_path):
-    pass
 
+def use_template_and_save(template_name, template_payload, save_to_path):
+    fs_loader = jinja2.FileSystemLoader('templates')
+    env = jinja2.Environment(loader=fs_loader)
+    template = env.get_template(template_name)
+    text_out = template.render(template_payload)
+    with open(save_to_path, 'w') as f:
+        f.write(text_out)
 
 
 def create_repo_treeinfo(args):
@@ -44,9 +51,10 @@ def create_repo_treeinfo(args):
         'packages_dir': args.packages_dir,
         'platforms': args.platforms if args.platforms is not None else args.arch,
         'variant': args.variant,
-        'version': args.version
+        'version': args.version,
+        'timestamp': args.timestamp if args.timestamp is not None else int(time.time())  # epoch
     }
-    print(template_payload)
+    use_template_and_save('repo.j2', template_payload, args.output_file)
 
 
 def create_baseos_treeinfo(args):
@@ -60,7 +68,6 @@ if __name__ == '__main__':
     if len(sys.argv) < 2 or '-h' in sys.argv or '--help' in sys.argv:
         parser.print_help()
     args = parser.parse_args()
-    print(args)
     if args.command == 'repo':
         create_repo_treeinfo(args)
     elif args.command == 'baseos':

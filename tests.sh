@@ -65,16 +65,6 @@ test_c8_powertools(){
     run_test "${FUNCNAME[0]}" "$URL" "$OUR_COMMAND" $CLEAN_COMMENTS
 }
 
-test_c9_stream_ha(){
-    URL=https://vault.centos.org/8.5.2111/PowerTools/x86_64/os/.treeinfo
-    OUR_COMMAND=""
-    CLEAN_COMMENTS=0
-    # we have to make that way because CentOS Linux
-    ./gen_treeinfo.py repo --arch x86_64 --family 'CentOS Linux' --family-short CentOS --version 8 --variant PowerTools --timestamp 1636765473  --output-file tests/generated_treeinfo
-    run_test "${FUNCNAME[0]}" "$URL" "$OUR_COMMAND" $CLEAN_COMMENTS
-}
-
-
 test_almalinux_baseos_87(){
     URL=https://repo.almalinux.org/almalinux/8.7/BaseOS/x86_64/os/.treeinfo
     OUR_COMMAND="./gen_treeinfo.py baseos --arch x86_64 --family AlmaLinux \

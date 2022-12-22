@@ -18,14 +18,15 @@ installation/pxe boot is a special case, to create them you firstly need to
 calculate checksums (`sha256sum`) for selected files. Note that current
 implementation for BaseOS adds AppStream as the second variant.
 
+Example:
 ```bash
-./gen_treeinfo.py baseos --arch x86_64 --family EuroLinux \
---version 8 --variant BaseOS --output-file /path/to/repo/os/.treeinfo \
---checksum images/boot.iso:sha256:b35e87b5838011a3637be660e4238af9a55e4edc74404c990f7a558e7f416658 \
---checksum images/efiboot.img:sha256:... \
---checksum images/install.img:sha256:... \
---checksum images/pxeboot/initrd.img:... \
---checksum images/pxeboot/vmlinuz:sha256:..."
+./gen_treeinfo.py baseos --arch x86_64 --family 'EuroLinux' --version 8 \
+--variant BaseOS --output-file /repo/BaseOS/x86_64/os/.treeinfo \
+--checksums images/boot.iso:sha256:$(sha256sum /repo/BaseOS/x86_64/os/images/boot.iso | awk '{print $1}') \
+--checksums images/efiboot.img.iso:sha256:$(sha256sum /repo/BaseOS/x86_64/os/images/efiboot.img | awk '{print $1}') \
+--checksum images/install.img:sha256:$(sha256sum /repo/BaseOS/x86_64/os/images/install.img | awk '{print $1}') \
+--checksum images/pxeboot/initrd.img:sha256:$(sha256sum /repo/BaseOS/x86_64/os/images/pxeboot/initrd.img | awk '{print $1}') \
+--checksum images/pxeboot/vmlinuz:sha256:$(sha256sum /repo/BaseOS/x86_64/os/images/pxeboot/vmlinuz | awk '{print $1}')
 ```
 
 ## Tests
